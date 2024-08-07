@@ -117,6 +117,7 @@ export const useAction = () => {
 
     socketRef.current.onerror = () => message.error("信令通道创建失败！");
 
+    // 监听消息，根据消息类型进行处理
     socketRef.current.onmessage = (e) => {
       if (!peerConnection.current) {
         return;
@@ -125,14 +126,18 @@ export const useAction = () => {
       const { type, sdp, iceCandidate } = JSON.parse(e.data);
 
       if (type === "answer") {
+        // 当接收到 Answer SDP 时，设置远程描述
         peerConnection.current.setRemoteDescription(
           new RTCSessionDescription({ type, sdp })
         );
       } else if (type === "answer_ice") {
+        // 当接收到 Answer ICE 时，添加到连接中
         peerConnection.current.addIceCandidate(iceCandidate);
       } else if (type === "offer") {
+        // 当接收到 Offer SDP 时，开始直播
         startLive(new RTCSessionDescription({ type, sdp }));
       } else if (type === "offer_ice") {
+        // 当接收到 Offer ICE 时，添加到连接中
         peerConnection.current.addIceCandidate(iceCandidate);
       }
 
@@ -141,10 +146,12 @@ export const useAction = () => {
       }
     };
 
+    // 创建 RTCPeerConnection 实例
     const peer = new RTCPeerConnection();
 
     peerConnection.current = peer;
 
+    // 监听远程流数据，将远程流添加到远程视频元素
     peerConnection.current.ontrack = (e) => {
       if (e && e.streams) {
         message.log("收到对方音频/视频流数据...");
@@ -153,7 +160,7 @@ export const useAction = () => {
     };
 
     const target = isOffer ? "offer" : "answer";
-
+    // 监听 ICE 候选人，发送到对方
     peerConnection.current.onicecandidate = (e) => {
       if (e.candidate) {
         message.log("搜集并发送候选人");
