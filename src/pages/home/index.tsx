@@ -18,7 +18,7 @@ export const Home = () => {
             }}
             className={pathname === item.path ? "text-blue-400 font-bold" : ""}
           >
-            {item.name}
+            {item.name}1111
           </Button>
         ))}
       </div>
