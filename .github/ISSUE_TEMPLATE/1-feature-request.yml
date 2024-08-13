@@ -1,0 +1,26 @@
+name: "功能请求"
+about: "提出一个新功能的请求"
+title: "[功能请求] "
+labels: "feature"
+body:
+  - type: textarea
+    id: feature-request
+    attributes:
+      label: "功能请求"
+      description: "请描述您想要的功能。"
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: "用例"
+      description: "请描述您想要的功能的用例。"
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "其他信息"
+      description: "请提供任何其他有关此功能请求的上下文信息。"
+    validations:
+      required: false
