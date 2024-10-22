@@ -28,7 +28,9 @@ export const GitHubCallback = () => {
 
   const code = new URLSearchParams(search).get("code");
 
-  const [accessToken, setAccessToken] = useState<string | null>("gho_1");
+  const [accessToken, setAccessToken] = useState<string | null>(
+    "gho_f70Zg18CZSyKKdevHFAOlVVLccJU241FfbsP"
+  );
 
   const [apiData, setApiData] = useState<IApiData>({
     user: null,
