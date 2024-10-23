@@ -1,8 +1,7 @@
-import { Button } from "antd";
+import { Button, Card } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Card } from "antd";
 
 const PreCode = ({ title, data }: { title: string; data: unknown }) => {
   return (
@@ -28,9 +27,7 @@ export const GitHubCallback = () => {
 
   const code = new URLSearchParams(search).get("code");
 
-  const [accessToken, setAccessToken] = useState<string | null>(
-    "gho_f70Zg18CZSyKKdevHFAOlVVLccJU241FfbsP"
-  );
+  const [accessToken, setAccessToken] = useState<string | null>();
 
   const [apiData, setApiData] = useState<IApiData>({
     user: null,
@@ -87,6 +84,42 @@ export const GitHubCallback = () => {
 
     updateApiData("issues", res.data);
   };
+
+  // 通过postMessage发送消息到原窗口
+  const sendMessage = (code: string) => {
+    window.opener.postMessage(
+      {
+        source: "github-callback",
+        code,
+      },
+      "http://localhost:3000"
+    );
+  };
+
+  // 接受消息，关闭窗口
+  const receiveMessage = (event: MessageEvent) => {
+    if (event.origin !== "http://localhost:3000") {
+      return;
+    }
+
+    if (event.data === "close") {
+      window.close();
+    }
+  };
+
+  useEffect(() => {
+    if (code && window.opener) {
+      sendMessage(code);
+    }
+  }, [code]);
+
+  useEffect(() => {
+    window.addEventListener("message", receiveMessage, false);
+
+    return () => {
+      window.removeEventListener("message", receiveMessage);
+    };
+  }, []);
 
   return (
     <div>
