@@ -1,4 +1,4 @@
-import { Button, Card } from "antd";
+import { Button, Card, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -43,15 +43,23 @@ export const GitHubCallback = () => {
 
   const getAccessToken = async () => {
     // 向后端发送请求
-    const res = await axios.post(`http://localhost:8080/api/oauth/github`, {
-      code: code,
-    });
+    try {
+      const res = await axios.post(`http://localhost:8080/api/oauth/github`, {
+        code: code,
+      });
 
-    console.log(res);
+      console.log(res);
 
-    const data = await res.data;
+      const data = await res.data;
 
-    setAccessToken(data.access_token);
+      setAccessToken(data.access_token);
+    } catch (error: any) {
+      if (error.response) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("server服务可能未运行");
+      }
+    }
   };
 
   const getUser = async () => {
