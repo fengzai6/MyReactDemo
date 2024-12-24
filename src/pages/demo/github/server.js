@@ -7,8 +7,8 @@ import express from "express";
 const app = express();
 const port = 8080;
 
-const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const clientSecret = import.meta.env.VITE_GITHUB_CLIENT_SECRET;
+const clientId = process.env.VITE_GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 const redirectUri = "http://localhost:3000/oauth/github/callback";
 
 app.use(bodyParser.json());

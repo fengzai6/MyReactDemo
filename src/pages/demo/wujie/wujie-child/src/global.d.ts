@@ -1,6 +1,7 @@
 // 仅导入类型似乎并不会增加打包体积
-import Wujie from "wujie/esm/sandbox";
 import { EventBus } from "wujie/esm/event";
+import WuJie from "wujie/esm/sandbox";
+import { IChildProps } from "../../index";
 
 declare global {
   interface Window {
@@ -24,8 +25,8 @@ declare global {
     $wujie: {
       bus: EventBus;
       shadowRoot?: ShadowRoot;
-      props?: { [key: string]: any };
-      location?: Object;
+      props?: { [key: string]: any } & IChildProps;
+      location?: object;
     };
   }
 }
