@@ -1,23 +1,26 @@
 import { Button, message, Modal, Skeleton } from "antd";
 import WuJieReact from "wujie-react";
-import { WujieChild } from "./WujieChild";
 import { ChildComponent2 } from "./child-child";
+import { LoadWujiePlugins } from "./LoadWujiePlugins";
 
-import { useEffect, useState } from "react";
+import { useAppContext } from "@/app-context";
+import { ReactNode, useEffect, useState } from "react";
 import "./api";
+import { Link } from "./Link";
 
 const ChildComponent = () => {
   const { bus } = WuJieReact;
 
   useEffect(() => {
-    bus.$on("showMessage", (msg: string) => {
+    // 不能使用匿名函数，否则无法解绑
+    const onShowMessage = (msg: string) => {
       message.info(msg);
-    });
+    };
+
+    bus.$on("showMessage", onShowMessage);
 
     return () => {
-      bus.$off("showMessage", (msg: string) => {
-        message.info(msg);
-      });
+      bus.$off("showMessage", onShowMessage);
     };
   }, []);
 
@@ -30,7 +33,8 @@ const ChildComponent = () => {
 };
 
 export interface Components {
-  link?: (data: any) => JSX.Element | null;
+  link?: (data: any) => ReactNode | null;
+  links?: (data: any[]) => ReactNode | null;
   number?: (num: number) => {
     num: number;
     callback: Function;
@@ -40,100 +44,113 @@ export interface Components {
 export interface IChildProps {
   showMessage: (msg: string) => void;
   showMsgWithParentData: (callback: (msg: string) => string) => void;
-  init: (props: Components) => void;
+  register: (childName: string, comps: Components) => void;
 }
 
 export const WuJie = () => {
-  const { setupApp, preloadApp, bus } = WuJieReact;
-
-  const [components, setComponents] = useState<Components>({});
-
-  const [loading, setLoading] = useState(false);
-
-  const lifecycles = {
-    beforeLoad: (appWindow: Window) => {
-      console.log(`${appWindow.__WUJIE.id} beforeLoad 生命周期`, appWindow);
-      setLoading(true);
-    },
-    beforeMount: (appWindow: Window) =>
-      console.log(`${appWindow.__WUJIE.id} beforeMount 生命周期`),
-    afterMount: (appWindow: Window) =>
-      console.log(`${appWindow.__WUJIE.id} afterMount 生命周期`),
-    beforeUnmount: (appWindow: Window) =>
-      console.log(`${appWindow.__WUJIE.id} beforeUnmount 生命周期`),
-    afterUnmount: (appWindow: Window) =>
-      console.log(`${appWindow.__WUJIE.id} afterUnmount 生命周期`),
-    activated: (appWindow: Window) => {
-      console.log(`${appWindow.__WUJIE.id} activated 生命周期`);
-    },
-    deactivated: (appWindow: Window) =>
-      console.log(`${appWindow.__WUJIE.id} deactivated 生命周期`),
-    loadError: (url: string, e: unknown) => console.log(`${url} 加载失败`, e),
-  };
-
-  setupApp({
-    name: "wujie-child",
-    url: "http://localhost:3057/",
-    exec: true,
-    ...lifecycles,
-  });
-
-  preloadApp({
-    name: "wujie-child",
-    url: "http://localhost:3057/",
-  });
-
-  // bus.$on("showMessage", (msg: string) => {
-  //   message.info(msg);
-  // });
+  const { wuJieState, setWuJieState } = useAppContext();
 
   const showMessage = (msg: string) => {
     message.success(msg);
   };
 
   const showMsgWithParentData = (callback: (msg: string) => string) => {
-    const msg = callback("hello wujie");
+    const msg = callback("hello wujie with parent data");
 
     message.success(msg);
   };
 
+  const linkList = [
+    {
+      url: "http://localhost:3057/",
+      name: "link-name",
+    },
+    {
+      url: "http://react.dev/",
+      name: "react",
+    },
+    {
+      url: "https://github.com",
+      name: "github",
+    },
+    {
+      url: "https://vitejs.dev",
+      name: "vite",
+    },
+  ];
+
   const data = {
     url: "http://localhost:3057/",
-    name: "wujie-child",
+    name: "link-name",
   };
 
-  const init = (props: Components) => {
-    setComponents(props);
-    setLoading(false);
+  const register = (childName: string, comps: Components) => {
+    setWuJieState((prev) => ({
+      ...prev,
+      plugins: prev.plugins.map((plugin) => {
+        if (plugin.name === childName) {
+          return {
+            ...plugin,
+            comp: comps,
+          };
+        }
+        return plugin;
+      }),
+      loading: false,
+    }));
+  };
+
+  const Links = () => {
+    return (
+      <div>
+        <div className="my-4">和原 link 共存</div>
+        {wuJieState.plugins.map((plugin) => {
+          const links = plu?.links?.(linkList);
+          return (
+            <div key={plugin.name}>
+              <h3>{plugin.name} Links</h3>
+              {links}
+            </div>
+          );
+        })}
+        {linkList.map((item) => (
+          <Link key={item.url} to={item.url}>
+            {item.name}
+          </Link>
+        ))}
+      </div>
+    );
   };
 
   const ProgressLink = () => {
-    const link = components.link?.(data);
+    const link = getChildComps("wujie-child")?.link?.(data);
 
     if (link) {
       return link;
     } else {
-      return <a>默认 a 标签</a>;
+      return <Link to={data.url}>{data.name}</Link>;
     }
   };
 
   const ProgressNum = () => {
     const [num, setNum] = useState(0);
 
-    const number = components.number?.(num);
+    const number = getChildComps("wujie-child")?.number;
 
     if (number) {
+      const { num: newNum, callback } = number(num);
       return (
         <div
           onClick={() => {
-            number.callback();
-            setNum(number.num);
+            callback?.();
+            setNum(newNum);
           }}
         >
-          {number.num}
+          {newNum}
         </div>
       );
     }
+    return null;
   };
 
   const ModalBox = () => {
@@ -145,6 +162,7 @@ export const WuJie = () => {
           onClick={() => {
             setVisible(true);
           }}
+          className="my-8"
         >
           show modal
         </Button>
@@ -156,6 +174,7 @@ export const WuJie = () => {
             setVisible(false);
           }}
         >
+          <div>modal内显示子应用组件</div>
           <ProgressLink />
           <ProgressNum />
         </Modal>
@@ -164,19 +183,23 @@ export const WuJie = () => {
   };
 
   useEffect(() => {
-    console.log("components", components);
-  }, [components]);
+    console.log("components", wuJieState.plugins);
+  }, [wuJieState]);
 
   return (
     <div>
       <h1>Main App</h1>
-      <Skeleton loading={loading} active>
+      <Skeleton loading={wuJieState.loading} active>
+        <div>替换原组件</div>
         <ProgressLink />
         <ProgressNum />
+        <Links />
       </Skeleton>
       <ModalBox />
       <ChildComponent />
-      <WujieChild props={{ showMessage, showMsgWithParentData, init }} />
+      <LoadWujiePlugins
+        props={{ showMessage, showMsgWithParentData, register }}
+      />
     </div>
   );
 };

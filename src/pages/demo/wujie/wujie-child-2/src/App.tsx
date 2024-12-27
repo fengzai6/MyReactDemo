@@ -48,7 +48,7 @@ function App() {
   const planbanApi = window.$wujie.props;
 
   useEffect(() => {
-    planbanApi?.register("wujie-child", {
+    planbanApi?.register("wujie-child-2", {
       link: (data) => {
         return <Link link={data.url} name={data.name} />;
       },
@@ -83,7 +83,7 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>I'm Children Web</h1>
+      <h1>I'm Children Web No.2</h1>
       <div className="card">
         <button
           onClick={() => {
@@ -113,9 +113,7 @@ function App() {
         >
           getMsg
         </div>
-        <p>
-          {msg} + {"count:" + planbanApi?.context.state}
-        </p>
+        <p>{msg}</p>
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>

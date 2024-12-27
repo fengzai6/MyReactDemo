@@ -17,5 +17,5 @@ export const ChildComponent2 = () => {
     };
   }, [bus]);
 
-  return <div>Child Component</div>;
+  return <span className="text-blue-300">Child Component</span>;
 };
