@@ -17,6 +17,26 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     loading: false,
     plugins: [],
     components: {},
+    context: {
+      links: [
+        {
+          url: "http://localhost:3057/",
+          name: "link-name",
+        },
+        {
+          url: "http://react.dev/",
+          name: "react",
+        },
+        {
+          url: "https://github.com",
+          name: "github",
+        },
+        {
+          url: "https://vitejs.dev",
+          name: "vite",
+        },
+      ],
+    },
   });
 
   return (

@@ -39,23 +39,28 @@ export const LoadWujiePlugins = (props: Partial<WuJieReact>) => {
     // 待定
     {
       name: "wujie-child-2",
-      url: "http://localhost:3058/",
+      url: "http://localhost:3058",
     },
-    {
-      name: "https://webpack.js.org/",
-      url: "https://webpack.js.org/",
-    },
+    // {
+    //   name: "https://webpack.js.org/",
+    //   url: "https://webpack.js.org/",
+    // },
   ];
 
   useEffect(() => {
-    setWuJieState((prev) => ({
-      ...prev,
-      plugins: childs.map((child) => ({
-        name: child.name,
-        url: child.url,
-        comp: {},
-      })),
-    }));
+    setWuJieState((prev) => {
+      if (prev.plugins.length) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        plugins: childs.map((child) => ({
+          name: child.name,
+          url: child.url,
+        })),
+      };
+    });
 
     childs.forEach((child) => {
       setupApp({

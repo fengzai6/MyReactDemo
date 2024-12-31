@@ -24,9 +24,9 @@ const SpecialLink = ({
   state: number;
 }) => {
   // filter仅数组中当链接是 github 时，显示该链接
-  const githubLink = links.filter((item) => item.name === "github");
+  const githubLink = links.filter((item) => item.name.includes("github"));
 
-  // 未来使用 ts-patterns 进行匹配，分别处理 pr、issue等链接，并调用接口获取状态
+  // TODO:未来使用 ts-patterns 进行匹配，分别处理 pr、issue等链接，并调用接口获取状态
 
   return (
     <>
@@ -47,7 +47,7 @@ function App() {
 
   const planbanApi = window.$wujie.props;
 
-  useEffect(() => {
+  const register = () => {
     planbanApi?.register("wujie-child", {
       link: (data) => {
         return <Link link={data.url} name={data.name} />;
@@ -64,7 +64,11 @@ function App() {
         return { num: num + 1, callback };
       },
     });
+  };
 
+  register();
+
+  useEffect(() => {
     const onShowMsg = (m: string) => setMsg(m);
     window.$wujie?.bus.$on("showMsg", onShowMsg);
 
@@ -113,9 +117,7 @@ function App() {
         >
           getMsg
         </div>
-        <p>
-          {msg} + {"count:" + planbanApi?.context.state}
-        </p>
+        <p>{msg}</p>
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>

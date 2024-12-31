@@ -8,4 +8,12 @@ export interface WuJieState {
     comp?: Components;
   }[];
   components?: Record<string, Components>;
+  context?: {
+    [key: string]: any;
+  } & {
+    links: {
+      name: string;
+      url: string;
+    }[];
+  };
 }

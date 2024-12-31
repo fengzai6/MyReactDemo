@@ -3,14 +3,23 @@ import "./App.css";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 
-const Link = ({ link, name }: { link: string; name: string }) => {
+export const Link = ({ link, name }: { link: string; name: string }) => {
   return (
     <a
       href={link}
       target="_blank"
-      className="bg-slate-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      style={{
+        backgroundColor: "slategray",
+        color: "white",
+        fontWeight: "bold",
+        padding: "0.5rem 1rem",
+        borderRadius: "0.25rem",
+        display: "flex",
+        alignItems: "center",
+        width: "fit-content",
+      }}
     >
-      <img src={reactLogo} className="" alt={name} />
+      <img src={reactLogo} alt={name} style={{ marginRight: "0.5rem" }} />
       <span>{name}</span>
     </a>
   );
@@ -26,16 +35,23 @@ const SpecialLink = ({
   // filter仅数组中当链接是 github 时，显示该链接
   const githubLink = links.filter((item) => item.name === "github");
 
+  // const [count, setCount] = useState(0);
+
   // 未来使用 ts-patterns 进行匹配，分别处理 pr、issue等链接，并调用接口获取状态
 
   return (
     <>
       {githubLink.map((item) => (
-        <Link
-          key={item.url}
-          link={item.url}
-          name={item.name + "+count:" + state}
-        />
+        <>
+          <Link
+            key={item.url}
+            link={item.url}
+            name={item.name + "+state:" + state}
+          />
+          {/* <button onClick={() => setCount((count) => count + 1)}>
+            private count is {count}
+          </button> */}
+        </>
       ))}
     </>
   );
@@ -47,24 +63,28 @@ function App() {
 
   const planbanApi = window.$wujie.props;
 
-  useEffect(() => {
-    planbanApi?.register("wujie-child-2", {
-      link: (data) => {
-        return <Link link={data.url} name={data.name} />;
-      },
-      links: (data) => {
-        return <SpecialLink links={data} state={count} />;
-      },
-      number: (num) => {
-        const callback = () => {
-          return window.$wujie.props?.showMessage(
-            "hello wujie with props method"
-          );
-        };
-        return { num: num + 1, callback };
-      },
-    });
+  planbanApi?.register("wujie-child-2", {
+    link: (data) => {
+      return <Link link={data.url} name={data.name} />;
+    },
+    links: () => {
+      return {
+        title: "Special Links",
+        url: "/special-links",
+      };
+      // return <SpecialLink links={data} state={count} />;
+    },
+    number: (num) => {
+      const callback = () => {
+        return window.$wujie.props?.showMessage(
+          "hello wujie with props method"
+        );
+      };
+      return { num: num + 1, callback };
+    },
+  });
 
+  useEffect(() => {
     const onShowMsg = (m: string) => setMsg(m);
     window.$wujie?.bus.$on("showMsg", onShowMsg);
 
