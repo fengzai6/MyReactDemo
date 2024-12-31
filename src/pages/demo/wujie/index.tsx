@@ -58,8 +58,8 @@ const Links = () => {
   const [linkList, setLinkList] = useState<{ url: string; name: string }[]>([]);
 
   const api = {
-    getLinks: () => {
-      return wuJieState.context?.links;
+    getLinks: (): { url: string; name: string }[] => {
+      return wuJieState.context?.links || [];
     },
   };
 
@@ -78,7 +78,10 @@ const Links = () => {
         const isComponent = isValidElement(links);
 
         const isPageData =
-          typeof links === "object" && links?.title && links?.url;
+          typeof links === "object" &&
+          links !== null &&
+          "title" in links &&
+          "url" in links;
 
         return (
           <div key={plugin.name}>
@@ -167,7 +170,7 @@ export const WuJie = () => {
     name: "link-name",
   };
 
-  const register = (childName: string, comps: Components) => {
+  const register = (childName: string, comps: Components): void => {
     console.log("register", childName, comps);
     setWuJieState((prev) => ({
       ...prev,
