@@ -1,7 +1,8 @@
 // 仅导入类型似乎并不会增加打包体积
 import { EventBus } from "wujie/esm/event";
 import WuJie from "wujie/esm/sandbox";
-import { IChildProps } from "../../index";
+// 未来从 npm 中导入
+import { IChildProps } from "../../../index";
 
 declare global {
   interface Window {

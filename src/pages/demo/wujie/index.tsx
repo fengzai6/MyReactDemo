@@ -8,6 +8,27 @@ import { isValidElement, ReactNode, useEffect, useState } from "react";
 import "./api";
 import { Link } from "./Link";
 
+export interface Components {
+  link?: (data: any) => ReactNode | null;
+  links?: (data: any[]) => ReactNode | { title: string; url: string } | null;
+  number?: (num: number) => {
+    num: number;
+    callback: Function;
+  };
+}
+
+export interface IChildProps {
+  showMessage: (msg: string) => void;
+  showMsgWithParentData: (callback: (msg: string) => string) => void;
+  register: (childName: string, comps: Components) => void;
+  api: {
+    getLinks: () => {
+      url: string;
+      name: string;
+    }[];
+  };
+}
+
 const ChildComponent = () => {
   const { bus } = WuJieReact;
 
@@ -32,27 +53,6 @@ const ChildComponent = () => {
   );
 };
 
-export interface Components {
-  link?: (data: any) => ReactNode | null;
-  links?: (data: any[]) => ReactNode | { title: string; url: string } | null;
-  number?: (num: number) => {
-    num: number;
-    callback: Function;
-  };
-}
-
-export interface IChildProps {
-  showMessage: (msg: string) => void;
-  showMsgWithParentData: (callback: (msg: string) => string) => void;
-  register: (childName: string, comps: Components) => void;
-  api: {
-    getLinks: () => {
-      url: string;
-      name: string;
-    }[];
-  };
-}
-
 const Links = () => {
   const { wuJieState } = useAppContext();
   const [linkList, setLinkList] = useState<{ url: string; name: string }[]>([]);
@@ -74,6 +74,7 @@ const Links = () => {
       {wuJieState.plugins.map((plugin) => {
         const links = plugin.comp?.links?.(linkList);
 
+        // TODO：将判断逻辑提取到 注册 步骤中，提前添加判断属性 isXXX 到 plugin.comp 中
         const isComponent = isValidElement(links);
 
         const isPageData =
@@ -88,7 +89,8 @@ const Links = () => {
               ? links
               : isPageData && (
                   <WuJieReact
-                    name={links?.title}
+                    // TODO：提取到组件中，并给 title 增加一个 useId 保证唯一性？
+                    name={plugin.name + "-" + links?.title}
                     url={plugin.url + links?.url}
                     props={{ api }}
                   />
@@ -96,11 +98,14 @@ const Links = () => {
           </div>
         );
       })}
-      {linkList.map((item) => (
-        <Link key={item.url} to={item.url}>
-          {item.name}
-        </Link>
-      ))}
+      <div>
+        <div>我是原组件</div>
+        {linkList.map((item) => (
+          <Link key={item.url} to={item.url}>
+            {item.name}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };
@@ -220,6 +225,7 @@ export const WuJie = () => {
   //   );
   // };
 
+  // 替换原组件的方式还需要再评估，暂时不考虑
   const ProgressLink = () => {
     const link = wuJieState.plugins
       .find((plugin) => plugin.name === "wujie-child")

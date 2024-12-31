@@ -31,12 +31,13 @@ export const LoadWujiePlugins = (props: Partial<WuJieReact>) => {
   };
 
   const childs = [
+    // 云端版
     {
       name: "wujie-child",
       url: "https://3057.qqwj.top/",
       // url: "http://localhost:3057/",
     },
-    // 待定
+    // 本地版
     {
       name: "wujie-child-2",
       url: "http://localhost:3058",

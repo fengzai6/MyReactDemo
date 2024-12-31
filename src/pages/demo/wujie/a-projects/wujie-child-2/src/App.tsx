@@ -25,37 +25,37 @@ export const Link = ({ link, name }: { link: string; name: string }) => {
   );
 };
 
-const SpecialLink = ({
-  links,
-  state,
-}: {
-  links: { url: string; name: string }[];
-  state: number;
-}) => {
-  // filter仅数组中当链接是 github 时，显示该链接
-  const githubLink = links.filter((item) => item.name === "github");
+// const SpecialLink = ({
+//   links,
+//   state,
+// }: {
+//   links: { url: string; name: string }[];
+//   state: number;
+// }) => {
+//   // filter仅数组中当链接是 github 时，显示该链接
+//   const githubLink = links.filter((item) => item.name === "github");
 
-  // const [count, setCount] = useState(0);
+//   // const [count, setCount] = useState(0);
 
-  // 未来使用 ts-patterns 进行匹配，分别处理 pr、issue等链接，并调用接口获取状态
+//   // 未来使用 ts-patterns 进行匹配，分别处理 pr、issue等链接，并调用接口获取状态
 
-  return (
-    <>
-      {githubLink.map((item) => (
-        <>
-          <Link
-            key={item.url}
-            link={item.url}
-            name={item.name + "+state:" + state}
-          />
-          {/* <button onClick={() => setCount((count) => count + 1)}>
-            private count is {count}
-          </button> */}
-        </>
-      ))}
-    </>
-  );
-};
+//   return (
+//     <>
+//       {githubLink.map((item) => (
+//         <>
+//           <Link
+//             key={item.url}
+//             link={item.url}
+//             name={item.name + "+state:" + state}
+//           />
+//           {/* <button onClick={() => setCount((count) => count + 1)}>
+//             private count is {count}
+//           </button> */}
+//         </>
+//       ))}
+//     </>
+//   );
+// };
 
 function App() {
   const [count, setCount] = useState(0);
