@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { IRouteProps } from "./props";
-import { routes } from "./routes";
+import { routes, singleRoutes } from "./routes";
 
 import { Home } from "@/pages/home";
 import { NotFound } from "@/pages/not-found";
@@ -25,6 +25,7 @@ export const Router = () => {
       <Route path="/" element={<Home />}>
         {routerViews(routes)}
       </Route>
+      {routerViews(singleRoutes)}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
