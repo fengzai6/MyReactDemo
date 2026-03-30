@@ -1,16 +1,21 @@
-import { App as AppWrapper, ConfigProvider } from "antd";
-import zhCN from "antd/locale/zh_CN";
-import { AppProvider } from "./app-context";
-import { Router } from "./router";
+import { StyleProvider } from "@ant-design/cssinjs";
+import { ConfigProvider } from "antd";
+import { AppLayout } from "@/components/app-layout";
 
-export const App = () => {
+function App() {
   return (
-    <AppProvider>
-      <ConfigProvider locale={zhCN}>
-        <AppWrapper>
-          <Router />
-        </AppWrapper>
+    <StyleProvider layer>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#2563eb",
+          },
+        }}
+      >
+        <AppLayout />
       </ConfigProvider>
-    </AppProvider>
+    </StyleProvider>
   );
-};
+}
+
+export default App;

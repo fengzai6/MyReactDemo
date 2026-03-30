@@ -1,21 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer theme, base, antd, components, utilities;
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-  color: #2c3e50;
-}
-
-* {
-  margin: 0;
-  box-sizing: border-box;
-}
+@import "tailwindcss";
 
 /*scroll*/
 ::-webkit-scrollbar {

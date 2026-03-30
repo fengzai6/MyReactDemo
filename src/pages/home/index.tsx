@@ -1,29 +1,25 @@
-import { routes } from "@/router/routes";
-import { Button } from "antd";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { DemoNavCard } from "@/components/demo-nav-card";
+import { demoRoutesMeta } from "@/router/routes";
 
 export const Home = () => {
-  const navigate = useNavigate();
-
-  const { pathname } = useLocation();
-
   return (
-    <div className="h-screen">
-      <div className="flex items-center gap-2 px-4 h-[4rem] backdrop-blur bg-white bg-opacity-60 sticky top-0 shadow z-50">
-        {routes.map((item, index) => (
-          <Button
-            key={index}
-            onClick={() => {
-              navigate(item.path);
-            }}
-            className={pathname === item.path ? "text-blue-400 font-bold" : ""}
-          >
-            {item.name}
-          </Button>
-        ))}
+    <div className="mx-auto max-w-5xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Demo Lab</h1>
+        <p className="mt-2 text-gray-500">
+          前端技术演示集合，涵盖微前端、实时通信、AI 应用等方向
+        </p>
       </div>
-      <div className="">
-        <Outlet />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {demoRoutesMeta.map((route) => (
+          <DemoNavCard
+            key={route.path}
+            path={route.path}
+            name={route.name}
+            description={route.description}
+            tags={route.tags}
+          />
+        ))}
       </div>
     </div>
   );

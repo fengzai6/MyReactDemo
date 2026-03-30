@@ -1,16 +1,37 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import babel from "@rolldown/plugin-babel";
+import tailwindcss from "@tailwindcss/vite";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import path from "path";
+import { defineConfig } from "vite";
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3000,
-  },
+  plugins: [
+    react(),
+    babel({ presets: [reactCompilerPreset()] }),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    rolldownOptions: {
+      output: {
+        advancedChunks: {
+          groups: [
+            {
+              name: "react",
+              test: /\/react(?:-dom)?/,
+            },
+            {
+              name: "antd",
+              test: /\/antd/,
+            },
+          ],
+        },
+      },
     },
   },
 });
