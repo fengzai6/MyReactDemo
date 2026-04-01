@@ -1,11 +1,11 @@
+import App from "@/App";
+import { Home } from "@/pages/home";
 import { lazy, Suspense, type ReactNode } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   type RouteObject,
 } from "react-router";
-import App from "@/App";
-import { Home } from "@/pages/home";
 
 const WebRtcDemo = lazy(() =>
   import("@/demos/web-rtc").then((m) => ({ default: m.WebRtcDemo })),
