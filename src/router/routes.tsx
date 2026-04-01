@@ -5,7 +5,7 @@ export interface IDemoRoute {
   name: string;
   description: string;
   tags: string[];
-  element?: ReactNode;
+  element: ReactNode;
 }
 
 export interface ISingleRoute {
@@ -13,7 +13,6 @@ export interface ISingleRoute {
   element?: ReactNode;
 }
 
-// demo 路由元数据（element 在 index.tsx 里注入，避免提前 import 所有页面）
 export const demoRoutesMeta: Omit<IDemoRoute, "element">[] = [
   {
     path: "/demos/web-rtc",
@@ -26,12 +25,6 @@ export const demoRoutesMeta: Omit<IDemoRoute, "element">[] = [
     name: "WebSocket",
     description: "WebSocket 实时双向通信演示",
     tags: ["WebSocket", "实时通信"],
-  },
-  {
-    path: "/demos/ai-draw",
-    name: "AI Draw",
-    description: "AI 图像生成演示",
-    tags: ["AI", "图像生成"],
   },
   {
     path: "/demos/wujie",
@@ -56,5 +49,11 @@ export const demoRoutesMeta: Omit<IDemoRoute, "element">[] = [
     name: "HTML to PDF",
     description: "HTML 内容导出为 PDF 文件演示",
     tags: ["PDF", "导出", "jsPDF"],
+  },
+  {
+    path: "/demos/pretext",
+    name: "Pretext",
+    description: "基于 @chenglou/pretext 的文本布局与换行测量演示",
+    tags: ["文本布局", "排版", "Canvas"],
   },
 ];

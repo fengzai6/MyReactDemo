@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -8,31 +8,33 @@ import App from "@/App";
 import { Home } from "@/pages/home";
 
 const WebRtcDemo = lazy(() =>
-  import("@/demos/web-rtc").then((m) => ({ default: m.WebRtcDemo }))
+  import("@/demos/web-rtc").then((m) => ({ default: m.WebRtcDemo })),
 );
 const WebSocketDemo = lazy(() =>
-  import("@/demos/web-socket").then((m) => ({ default: m.WebSocketDemo }))
-);
-const AiDrawDemo = lazy(() =>
-  import("@/demos/ai-draw").then((m) => ({ default: m.AiDrawDemo }))
+  import("@/demos/web-socket").then((m) => ({ default: m.WebSocketDemo })),
 );
 const WujieDemo = lazy(() =>
-  import("@/demos/wujie").then((m) => ({ default: m.WujieDemo }))
+  import("@/demos/wujie").then((m) => ({ default: m.WujieDemo })),
 );
 const GithubDemo = lazy(() =>
-  import("@/demos/github").then((m) => ({ default: m.GithubDemo }))
+  import("@/demos/github").then((m) => ({ default: m.GithubDemo })),
 );
 const React19Demo = lazy(() =>
-  import("@/demos/react19").then((m) => ({ default: m.React19Demo }))
+  import("@/demos/react19").then((m) => ({ default: m.React19Demo })),
 );
 const HtmlToPdfDemo = lazy(() =>
-  import("@/demos/html-to-pdf").then((m) => ({ default: m.HtmlToPdfDemo }))
+  import("@/demos/html-to-pdf").then((m) => ({ default: m.HtmlToPdfDemo })),
+);
+const Pretext = lazy(() =>
+  import("@/demos/pretext").then((m) => ({ default: m.Pretext })),
 );
 const GithubCallback = lazy(() =>
-  import("@/demos/github/Callback").then((m) => ({ default: m.GithubCallback }))
+  import("@/demos/github/Callback").then((m) => ({
+    default: m.GithubCallback,
+  })),
 );
 const NotFound = lazy(() =>
-  import("@/pages/not-found").then((m) => ({ default: m.NotFound }))
+  import("@/pages/not-found").then((m) => ({ default: m.NotFound })),
 );
 
 const Loading = () => (
@@ -41,15 +43,26 @@ const Loading = () => (
   </div>
 );
 
+const wrapWithSuspense = (element: ReactNode) => (
+  <Suspense fallback={<Loading />}>{element}</Suspense>
+);
+
 const demoRoutes: RouteObject[] = [
-  { path: "web-rtc", element: <Suspense fallback={<Loading />}><WebRtcDemo /></Suspense> },
-  { path: "web-socket", element: <Suspense fallback={<Loading />}><WebSocketDemo /></Suspense> },
-  { path: "ai-draw", element: <Suspense fallback={<Loading />}><AiDrawDemo /></Suspense> },
-  { path: "wujie", element: <Suspense fallback={<Loading />}><WujieDemo /></Suspense> },
-  { path: "github", element: <Suspense fallback={<Loading />}><GithubDemo /></Suspense> },
-  { path: "react19", element: <Suspense fallback={<Loading />}><React19Demo /></Suspense> },
-  { path: "html-to-pdf", element: <Suspense fallback={<Loading />}><HtmlToPdfDemo /></Suspense> },
+  { path: "web-rtc", element: <WebRtcDemo /> },
+  { path: "web-socket", element: <WebSocketDemo /> },
+  { path: "wujie", element: <WujieDemo /> },
+  { path: "github", element: <GithubDemo /> },
+  { path: "react19", element: <React19Demo /> },
+  { path: "html-to-pdf", element: <HtmlToPdfDemo /> },
+  { path: "pretext", element: <Pretext /> },
 ];
+
+const demoRouteChildren: RouteObject[] = demoRoutes.map(
+  ({ path, element }) => ({
+    path,
+    element: wrapWithSuspense(element),
+  }),
+);
 
 const baseRoutes: RouteObject[] = [
   {
@@ -57,16 +70,16 @@ const baseRoutes: RouteObject[] = [
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: "demos", children: demoRoutes },
+      { path: "demos", children: demoRouteChildren },
     ],
   },
   {
     path: "/oauth/github/callback",
-    element: <Suspense fallback={<Loading />}><GithubCallback /></Suspense>,
+    element: wrapWithSuspense(<GithubCallback />),
   },
   {
     path: "*",
-    element: <Suspense fallback={<Loading />}><NotFound /></Suspense>,
+    element: wrapWithSuspense(<NotFound />),
   },
 ];
 
