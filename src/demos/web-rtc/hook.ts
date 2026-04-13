@@ -48,12 +48,12 @@ export const useAction = () => {
       message.log("摄像头/麦克风获取成功！");
 
       localVideoRef.current!.srcObject = localStream;
-    } catch (error) {
+    } catch {
       return message.error("摄像头/麦克风获取失败！");
     }
 
     message.log(
-      `------ WebRTC ${isOffer ? "发起方" : "接收方"}流程开始 ------`
+      `------ WebRTC ${isOffer ? "发起方" : "接收方"}流程开始 ------`,
     );
 
     if (!peerConnection.current) {
@@ -77,7 +77,7 @@ export const useAction = () => {
         JSON.stringify({
           type: "offer",
           sdp: offer.sdp,
-        })
+        }),
       );
     } else {
       if (!offerSdp) {
@@ -98,7 +98,7 @@ export const useAction = () => {
         JSON.stringify({
           type: "answer",
           sdp: answer.sdp,
-        })
+        }),
       );
     }
   };
@@ -128,7 +128,7 @@ export const useAction = () => {
       if (type === "answer") {
         // 当接收到 Answer SDP 时，设置远程描述
         peerConnection.current.setRemoteDescription(
-          new RTCSessionDescription({ type, sdp })
+          new RTCSessionDescription({ type, sdp }),
         );
       } else if (type === "answer_ice") {
         // 当接收到 Answer ICE 时，添加到连接中
@@ -168,7 +168,7 @@ export const useAction = () => {
           JSON.stringify({
             type: `${target}_ice`,
             iceCandidate: e.candidate,
-          })
+          }),
         );
       } else {
         message.log("候选人收集完成！");
@@ -177,20 +177,23 @@ export const useAction = () => {
   };
 
   const toggleVideoPause = (isReceive?: boolean) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     remoteVideoRef.current!.paused
       ? remoteVideoRef.current?.play()
       : remoteVideoRef.current?.pause();
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     localVideoRef.current!.paused
       ? localVideoRef.current?.play()
       : localVideoRef.current?.pause();
 
     message.log(localVideoRef.current!.paused ? "暂停视频流" : "播放视频流");
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     !isReceive &&
       socketRef.current?.send(
         JSON.stringify({
           type: "toggleVideoPause",
-        })
+        }),
       );
   };
 

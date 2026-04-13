@@ -15,6 +15,12 @@ export interface ISingleRoute {
 
 export const demoRoutesMeta: Omit<IDemoRoute, "element">[] = [
   {
+    path: "/demos/browser-tts",
+    name: "Browser TTS",
+    description: "基于 Web Speech API 的浏览器原生语音合成测试演示",
+    tags: ["TTS", "Web Speech API", "语音合成"],
+  },
+  {
     path: "/demos/web-rtc",
     name: "WebRTC",
     description: "基于 WebRTC + WebSocket 的点对点音频通信演示",

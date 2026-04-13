@@ -51,6 +51,7 @@ export const LoadWujiePlugins = ({ props }: ILoadWujiePluginsProps) => {
         props,
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

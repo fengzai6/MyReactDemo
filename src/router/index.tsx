@@ -10,6 +10,9 @@ import {
 const WebRtcDemo = lazy(() =>
   import("@/demos/web-rtc").then((m) => ({ default: m.WebRtcDemo })),
 );
+const BrowserTtsDemo = lazy(() =>
+  import("@/demos/browser-tts").then((m) => ({ default: m.BrowserTtsDemo })),
+);
 const WebSocketDemo = lazy(() =>
   import("@/demos/web-socket").then((m) => ({ default: m.WebSocketDemo })),
 );
@@ -48,6 +51,7 @@ const wrapWithSuspense = (element: ReactNode) => (
 );
 
 const demoRoutes: RouteObject[] = [
+  { path: "browser-tts", element: <BrowserTtsDemo /> },
   { path: "web-rtc", element: <WebRtcDemo /> },
   { path: "web-socket", element: <WebSocketDemo /> },
   { path: "wujie", element: <WujieDemo /> },
