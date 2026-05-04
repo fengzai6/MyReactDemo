@@ -28,6 +28,9 @@ const React19Demo = lazy(() =>
 const HtmlToPdfDemo = lazy(() =>
   import("@/demos/html-to-pdf").then((m) => ({ default: m.HtmlToPdfDemo })),
 );
+const I18nDemo = lazy(() =>
+  import("@/demos/i18next").then((m) => ({ default: m.I18nDemo })),
+);
 const Pretext = lazy(() =>
   import("@/demos/pretext").then((m) => ({ default: m.Pretext })),
 );
@@ -58,6 +61,7 @@ const demoRoutes: RouteObject[] = [
   { path: "github", element: <GithubDemo /> },
   { path: "react19", element: <React19Demo /> },
   { path: "html-to-pdf", element: <HtmlToPdfDemo /> },
+  { path: "i18next", element: <I18nDemo /> },
   { path: "pretext", element: <Pretext /> },
 ];
 

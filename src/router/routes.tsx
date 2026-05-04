@@ -57,6 +57,12 @@ export const demoRoutesMeta: Omit<IDemoRoute, "element">[] = [
     tags: ["PDF", "导出", "jsPDF"],
   },
   {
+    path: "/demos/i18next",
+    name: "i18next",
+    description: "基于 i18next 的国际化演示，支持插值、复数、嵌套 key 等特性",
+    tags: ["i18n", "i18next", "国际化"],
+  },
+  {
     path: "/demos/pretext",
     name: "Pretext",
     description: "基于 @chenglou/pretext 的文本布局与换行测量演示",
