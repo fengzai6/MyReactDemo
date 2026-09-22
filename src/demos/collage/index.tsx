@@ -277,14 +277,6 @@ export const CollageDemo = () => {
             </Button>
             <Button
               size="small"
-              icon={<DeleteOutlined />}
-              disabled={!hasItems}
-              onClick={handleClear}
-            >
-              清空
-            </Button>
-            <Button
-              size="small"
               icon={<CopyOutlined />}
               disabled={!hasItems}
               onClick={() => void handleCopy()}
@@ -413,7 +405,19 @@ export const CollageDemo = () => {
               <PictureOutlined className="text-gray-400" />
               图片列表
             </div>
-            <span className="text-xs text-gray-400">{items.length} 张</span>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-gray-400">{items.length} 张</span>
+              <Button
+                type="text"
+                danger
+                size="small"
+                icon={<DeleteOutlined />}
+                disabled={!hasItems}
+                onClick={handleClear}
+              >
+                清空
+              </Button>
+            </div>
           </div>
           <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-3">
             {items.length === 0 ? (
