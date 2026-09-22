@@ -1,9 +1,12 @@
 import App from "@/App";
 import { Home } from "@/pages/home";
-import { lazy, Suspense, type ReactNode } from "react";
+import { demoRoutesMeta } from "@/router/routes";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider,
+  useLocation,
   type RouteObject,
 } from "react-router";
 
@@ -56,6 +59,22 @@ const wrapWithSuspense = (element: ReactNode) => (
   <Suspense fallback={<Loading />}>{element}</Suspense>
 );
 
+const RouteTitleSync = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (pathname === "/") {
+      document.title = "Demo Lab";
+      return;
+    }
+
+    const current = demoRoutesMeta.find((route) => route.path === pathname);
+    document.title = current ? `${current.name} | Demo Lab` : "Demo Lab";
+  }, [pathname]);
+
+  return <Outlet />;
+};
+
 const demoRoutes: RouteObject[] = [
   { path: "browser-tts", element: <BrowserTtsDemo /> },
   { path: "web-rtc", element: <WebRtcDemo /> },
@@ -78,20 +97,25 @@ const demoRouteChildren: RouteObject[] = demoRoutes.map(
 
 const baseRoutes: RouteObject[] = [
   {
-    path: "/",
-    element: <App />,
+    element: <RouteTitleSync />,
     children: [
-      { index: true, element: <Home /> },
-      { path: "demos", children: demoRouteChildren },
+      {
+        path: "/",
+        element: <App />,
+        children: [
+          { index: true, element: <Home /> },
+          { path: "demos", children: demoRouteChildren },
+        ],
+      },
+      {
+        path: "/oauth/github/callback",
+        element: wrapWithSuspense(<GithubCallback />),
+      },
+      {
+        path: "*",
+        element: wrapWithSuspense(<NotFound />),
+      },
     ],
-  },
-  {
-    path: "/oauth/github/callback",
-    element: wrapWithSuspense(<GithubCallback />),
-  },
-  {
-    path: "*",
-    element: wrapWithSuspense(<NotFound />),
   },
 ];
 
