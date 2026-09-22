@@ -34,6 +34,9 @@ const I18nDemo = lazy(() =>
 const Pretext = lazy(() =>
   import("@/demos/pretext").then((m) => ({ default: m.Pretext })),
 );
+const CollageDemo = lazy(() =>
+  import("@/demos/collage").then((m) => ({ default: m.CollageDemo })),
+);
 const GithubCallback = lazy(() =>
   import("@/demos/github/Callback").then((m) => ({
     default: m.GithubCallback,
@@ -63,6 +66,7 @@ const demoRoutes: RouteObject[] = [
   { path: "html-to-pdf", element: <HtmlToPdfDemo /> },
   { path: "i18next", element: <I18nDemo /> },
   { path: "pretext", element: <Pretext /> },
+  { path: "collage", element: <CollageDemo /> },
 ];
 
 const demoRouteChildren: RouteObject[] = demoRoutes.map(
