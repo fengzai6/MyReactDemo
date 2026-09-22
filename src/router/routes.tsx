@@ -68,4 +68,10 @@ export const demoRoutesMeta: Omit<IDemoRoute, "element">[] = [
     description: "基于 @chenglou/pretext 的文本布局与换行测量演示",
     tags: ["文本布局", "排版", "Canvas"],
   },
+  {
+    path: "/demos/collage",
+    name: "Collage",
+    description: "粘贴、拖拽多张图片并按竖排、横排或网格布局导出 PNG",
+    tags: ["Canvas", "图片拼图", "PNG"],
+  },
 ];
