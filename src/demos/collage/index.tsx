@@ -256,21 +256,16 @@ export const CollageDemo = () => {
   };
 
   return (
-    <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
+    <div className="mx-auto flex max-w-[1600px] flex-col gap-3">
       <section className="rounded-xl border border-gray-200 bg-white px-4 py-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <span className="inline-flex shrink-0 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
               Canvas
             </span>
-            <div className="min-w-0">
-              <h1 className="text-lg font-semibold leading-6 text-gray-900">
-                在线拼图工具
-              </h1>
-              <p className="truncate text-xs text-gray-500">
-                粘贴、拖拽或选择多张图片，按指定布局拼接并导出 PNG。
-              </p>
-            </div>
+            <h1 className="min-w-0 truncate text-lg font-semibold leading-6 text-gray-900">
+              在线拼图工具
+            </h1>
           </div>
           <div className="grid shrink-0 grid-cols-2 gap-2 [&_.ant-btn]:w-full sm:flex sm:flex-wrap sm:items-center sm:[&_.ant-btn]:w-auto">
             <Button
@@ -411,7 +406,7 @@ export const CollageDemo = () => {
         </div>
       </section>
 
-      <div className="grid min-h-[640px] gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <div className="grid min-h-[640px] gap-3 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="flex min-h-[280px] flex-col rounded-xl border border-gray-200 bg-white">
           <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
