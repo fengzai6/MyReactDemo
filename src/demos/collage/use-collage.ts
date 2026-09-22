@@ -7,8 +7,13 @@ import {
   type DragEvent,
 } from "react";
 import { message } from "antd";
+import { useShallow } from "zustand/react/shallow";
 import { computeCollageLayout } from "./compute-layout";
 import { renderCollage } from "./render-collage";
+import {
+  DEFAULT_COLLAGE_SETTINGS,
+  useCollageStore,
+} from "./stores/use-collage-store";
 import type {
   ICollageImage,
   ICollageRenderResult,
@@ -17,19 +22,6 @@ import type {
   TCollageMode,
   TCollageResizeMode,
 } from "./types";
-
-const DEFAULT_SETTINGS: ICollageSettings = {
-  mode: "v",
-  resizeMode: "native",
-  cols: 2,
-  outSize: 1080,
-  outScale: 1,
-  gap: 12,
-  radius: 0,
-  background: "#ffffff",
-  transparent: false,
-  autoSize: false,
-};
 
 const clampNumber = (
   value: number,
@@ -49,21 +41,20 @@ const getDefaultFixedOutSize = (
   settings: ICollageSettings,
 ) => {
   if (items.length === 0) {
-    return DEFAULT_SETTINGS.outSize;
+    return DEFAULT_COLLAGE_SETTINGS.outSize;
   }
 
   const nativeLayout = computeCollageLayout(items, {
     ...settings,
     resizeMode: "native",
   });
-  const size =
-    settings.mode === "h" ? nativeLayout.height : nativeLayout.width;
+  const size = settings.mode === "h" ? nativeLayout.height : nativeLayout.width;
 
   return clampNumber(
     Math.round(size),
     1,
     8000,
-    DEFAULT_SETTINGS.outSize,
+    DEFAULT_COLLAGE_SETTINGS.outSize,
   );
 };
 
@@ -71,15 +62,15 @@ const formatTimestamp = () => {
   const date = new Date();
   const pad = (value: number) => String(value).padStart(2, "0");
 
-  return [
-    date.getFullYear(),
-    pad(date.getMonth() + 1),
-    pad(date.getDate()),
-  ].join("") +
+  return (
+    [date.getFullYear(), pad(date.getMonth() + 1), pad(date.getDate())].join(
+      "",
+    ) +
     "-" +
     [pad(date.getHours()), pad(date.getMinutes()), pad(date.getSeconds())].join(
       "",
-    );
+    )
+  );
 };
 
 const canvasToBlob = (canvas: HTMLCanvasElement) => {
@@ -113,9 +104,13 @@ export const useCollage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const itemsRef = useRef<ICollageImage[]>([]);
   const pendingCountRef = useRef(0);
+  const { settings, updateSettings } = useCollageStore(
+    useShallow((state) => ({
+      settings: state.settings,
+      updateSettings: state.updateSettings,
+    })),
+  );
   const [items, setItems] = useState<ICollageImage[]>([]);
-  const [settings, setSettings] =
-    useState<ICollageSettings>(DEFAULT_SETTINGS);
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [itemScales, setItemScales] = useState<TCollageItemScales>({});
@@ -162,7 +157,8 @@ export const useCollage = () => {
         ...itemsRef.current,
         {
           id: `${file.name}-${file.lastModified}-${crypto.randomUUID()}`,
-          name: file.name && file.name !== "image.png" ? file.name : "粘贴的图片",
+          name:
+            file.name && file.name !== "image.png" ? file.name : "粘贴的图片",
           url,
           image,
           width,
@@ -259,7 +255,7 @@ export const useCollage = () => {
   };
 
   const handleModeChange = (mode: TCollageMode) => {
-    setSettings((current) => {
+    updateSettings((current) => {
       if (current.resizeMode === "native") {
         return {
           ...current,
@@ -280,7 +276,7 @@ export const useCollage = () => {
   };
 
   const handleResizeModeChange = (resizeMode: TCollageResizeMode) => {
-    setSettings((current) => {
+    updateSettings((current) => {
       if (resizeMode === "native") {
         return {
           ...current,
@@ -303,15 +299,21 @@ export const useCollage = () => {
   ) => {
     const fallback =
       key === "outSize"
-        ? DEFAULT_SETTINGS.outSize
+        ? DEFAULT_COLLAGE_SETTINGS.outSize
         : key === "cols" || key === "outScale"
           ? 1
           : 0;
     const minimum = key === "outSize" ? 1 : key === "outScale" ? 0.1 : 0;
     const maximum =
-      key === "outSize" ? 8000 : key === "cols" ? 8 : key === "outScale" ? 8 : 200;
+      key === "outSize"
+        ? 8000
+        : key === "cols"
+          ? 8
+          : key === "outScale"
+            ? 8
+            : 200;
 
-    setSettings((current) => ({
+    updateSettings((current) => ({
       ...current,
       [key]: clampNumber(
         Number(event.target.value),
@@ -323,28 +325,28 @@ export const useCollage = () => {
   };
 
   const handleBackgroundChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSettings((current) => ({
+    updateSettings((current) => ({
       ...current,
       background: event.target.value,
     }));
   };
 
   const handleTransparentChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSettings((current) => ({
+    updateSettings((current) => ({
       ...current,
       transparent: event.target.checked,
     }));
   };
 
   const handleAutoSizeChange = (checked: boolean) => {
-    setSettings((current) => ({
+    updateSettings((current) => ({
       ...current,
       autoSize: checked,
     }));
   };
 
   const handleOutScaleChange = (outScale: number) => {
-    setSettings((current) => ({
+    updateSettings((current) => ({
       ...current,
       outScale,
     }));
@@ -520,10 +522,7 @@ export const useCollage = () => {
   }, [items, selectedItemId, settings]);
 
   useEffect(() => {
-    if (
-      selectedItemId &&
-      !items.some((item) => item.id === selectedItemId)
-    ) {
+    if (selectedItemId && !items.some((item) => item.id === selectedItemId)) {
       setSelectedItemId(null);
     }
   }, [items, selectedItemId]);
